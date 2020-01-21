@@ -3,58 +3,77 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
-//import javax.servlet.ServletException;
-//import javax.servlet.http.*;
+import javax.servlet.ServletException;
+import javax.servlet.http.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.io.FilenameUtils;
 import org.opencv.core.*;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.CLAHE;
 import org.opencv.imgproc.Imgproc;
 
-public class MainServlet {//extends HttpServlet {
+public class MainServlet extends HttpServlet {
 
-//    public void doGet(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException, ServletException {
-////        httpServletResponse.getWriter().print("Hello from servlet");
-//        httpServletRequest.getRequestDispatcher("/index.jsp").forward(httpServletRequest, httpServletResponse);
-//    }
+    public void doGet(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException, ServletException {
+//        httpServletResponse.getWriter().print("Hello from servlet");
+        httpServletRequest.getRequestDispatcher("/index.jsp").forward(httpServletRequest, httpServletResponse);
+    }
 
     public MainServlet() {
-//        super();
+        super();
         System.out.println("Servlet created.");
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
     }
 
-//    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//        if (ServletFileUpload.isMultipartContent(request)) {
-//            try {
-//                List<FileItem> multiparts = new ServletFileUpload(new DiskFileItemFactory()).parseRequest(request);
-//                File file = null;
-//                for (FileItem item : multiparts) {
-//                    if (!item.isFormField()) {
-//                        String name = new File(item.getName()).getName();
-//                        String relativeWebPath = "/WEB-INF/static/";
-//                        String absoluteDiskPath = getServletContext().getRealPath(relativeWebPath);
-//                        file = new File(absoluteDiskPath + name);
-//                        item.write(file);
-//                    }
-//                }
-//                //File uploaded successfully
-//                request.setAttribute("message", "File Uploaded Successfully");
-//                if (file != null) {
-//                    adjustBrigtness(file);
-//                }
-//            } catch (Exception ex) {
-//                request.setAttribute("message", "File Upload Failed due to " + ex);
-//            }
-//        } else {
-//            request.setAttribute("message", "No File found");
-//        }
-//        request.getRequestDispatcher("/index.jsp").forward(request, response);
-//    }
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if (ServletFileUpload.isMultipartContent(request)) {
+            try {
+                List<FileItem> multiparts = new ServletFileUpload(new DiskFileItemFactory()).parseRequest(request);
+                File file = null;
+                for (FileItem item : multiparts) {
+                    if (!item.isFormField()) {
+                        String name = new File(item.getName()).getName();
+                        String relativeWebPath = "/WEB-INF/static/";
+                        String absoluteDiskPath = getServletContext().getRealPath(relativeWebPath);
+                        file = new File(absoluteDiskPath + name);
+                        item.write(file);
+                    }
+                }
+                //File uploaded successfully
+                request.setAttribute("message", "File \""+ FilenameUtils.getName(file.getName())+"\" uploaded successfully.");
+                request.setAttribute("filesize", getFileSizeKiloBytes(file));
+                if (file != null) {
+                    adjustBrigtness(file);
+                    histogramEqualise(file);
+                    compressJpeg(file);
+                    blur(file, 8);
+                }
+            } catch (Exception ex) {
+                request.setAttribute("message", "File Upload Failed due to " + ex);
+            }
+        } else {
+            request.setAttribute("message", "No File found");
+        }
+        request.getRequestDispatcher("/index.jsp").forward(request, response);
+    }
+
+    private static String getFileSizeKiloBytes(File file) {
+        DecimalFormat df = new DecimalFormat("#.###");
+        df.setRoundingMode(RoundingMode.CEILING);
+        return df.format(file.length() / 1024) + "  kb";
+
+    }
 
     public static void applyCLAHE(Mat srcArry, Mat dstArry) {
         //Function that applies the CLAHE algorithm to "dstArry".
@@ -96,17 +115,17 @@ public class MainServlet {//extends HttpServlet {
         return ImageIO.read(new ByteArrayInputStream(mob.toArray()));
     }
 
-    public static void main(String[] args) {
-        try {
-            System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-            adjustBrigtness(new File("C:\\Users\\Dmitriy\\IdeaProjects\\12345.jpg"));
-            histogramEqualise(new File("C:\\Users\\Dmitriy\\IdeaProjects\\12345.jpg"));
-            compressJpeg(new File("C:\\Users\\Dmitriy\\IdeaProjects\\12345.jpg"));
-            blur(new File("C:\\Users\\Dmitriy\\IdeaProjects\\12345.jpg"), 6);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    public static void main(String[] args) {
+//        try {
+//            System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+//            adjustBrigtness(new File("C:\\Users\\Dmitriy\\IdeaProjects\\12345.jpg"));
+//            histogramEqualise(new File("C:\\Users\\Dmitriy\\IdeaProjects\\12345.jpg"));
+//            compressJpeg(new File("C:\\Users\\Dmitriy\\IdeaProjects\\12345.jpg"));
+//            blur(new File("C:\\Users\\Dmitriy\\IdeaProjects\\12345.jpg"), 6);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     public static void histogramEqualise(File inputFile) {
         // Reading the Image from the file and storing it in to a Matrix object
