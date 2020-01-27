@@ -40,27 +40,35 @@ public class MainServlet extends HttpServlet {
         if (ServletFileUpload.isMultipartContent(request)) {
             try {
                 List<FileItem> multiparts = new ServletFileUpload(new DiskFileItemFactory()).parseRequest(request);
-                File file = null;
-                for (FileItem item : multiparts) {
-                    if (!item.isFormField()) {
-                        String name = new File(item.getName()).getName();
-                        String relativeWebPath = "/WEB-INF/static/";
-                        String absoluteDiskPath = getServletContext().getRealPath(relativeWebPath);
-                        file = new File(absoluteDiskPath + name);
-                        item.write(file);
+                if (!multiparts.isEmpty()) {
+                    File file = null;
+                    for (FileItem item : multiparts) {
+                        if (item.getSize() > 0) {
+                            String name = new File(item.getName()).getName();
+                            String relativeWebPath = "/WEB-INF/static/";
+                            String absoluteDiskPath = getServletContext().getRealPath(relativeWebPath);
+                            file = new File(absoluteDiskPath + name);
+                            item.write(file);
+
+                            if (file.length() > 0) {
+                                adjustBrigtness(file);
+                                histogramEqualise(file);
+                                compressJpeg(file);
+                                blur(file, 6);
+                            }
+
+                            request.setAttribute("message", "Файл \"" + FilenameUtils.getName(file.getName()) + "\" загружен успешно.");
+                            request.setAttribute("filesize", getFileSizeKiloBytes(file));
+                            request.setAttribute("errorCode", 0);
+                        } else {
+                            request.setAttribute("message", "Файл не выбран!");
+                            request.setAttribute("filesize", "");
+                            request.setAttribute("errorCode", 1);
+                        }
                     }
                 }
-                //File uploaded successfully
-                request.setAttribute("message", "File \""+ FilenameUtils.getName(file.getName())+"\" uploaded successfully.");
-                request.setAttribute("filesize", getFileSizeKiloBytes(file));
-                if (file != null) {
-                    adjustBrigtness(file);
-                    histogramEqualise(file);
-                    compressJpeg(file);
-                    blur(file, 8);
-                }
             } catch (Exception ex) {
-                request.setAttribute("message", "File Upload Failed due to " + ex);
+                request.setAttribute("message", "Ошибка загрузки: " + ex);
             }
         } else {
             request.setAttribute("message", "No File found");
@@ -75,7 +83,7 @@ public class MainServlet extends HttpServlet {
 
     }
 
-    public static void applyCLAHE(Mat srcArry, Mat dstArry) {
+    private static void applyCLAHE(Mat srcArry, Mat dstArry) {
         //Function that applies the CLAHE algorithm to "dstArry".
 
         if (srcArry.channels() >= 3) {
@@ -102,30 +110,18 @@ public class MainServlet extends HttpServlet {
         }
     }
 
-    public static Mat BufferedImage2Mat(BufferedImage image) throws IOException {
+    private static Mat BufferedImage2Mat(BufferedImage image) throws IOException {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         ImageIO.write(image, "jpg", byteArrayOutputStream);
         byteArrayOutputStream.flush();
         return Imgcodecs.imdecode(new MatOfByte(byteArrayOutputStream.toByteArray()), Imgcodecs.IMREAD_UNCHANGED);
     }
 
-    public static BufferedImage Mat2BufferedImage(Mat matrix)throws IOException {
+    private static BufferedImage Mat2BufferedImage(Mat matrix)throws IOException {
         MatOfByte mob=new MatOfByte();
         Imgcodecs.imencode(".jpg", matrix, mob);
         return ImageIO.read(new ByteArrayInputStream(mob.toArray()));
     }
-
-//    public static void main(String[] args) {
-//        try {
-//            System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-//            adjustBrigtness(new File("C:\\Users\\Dmitriy\\IdeaProjects\\12345.jpg"));
-//            histogramEqualise(new File("C:\\Users\\Dmitriy\\IdeaProjects\\12345.jpg"));
-//            compressJpeg(new File("C:\\Users\\Dmitriy\\IdeaProjects\\12345.jpg"));
-//            blur(new File("C:\\Users\\Dmitriy\\IdeaProjects\\12345.jpg"), 6);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
 
     public static void histogramEqualise(File inputFile) {
         // Reading the Image from the file and storing it in to a Matrix object
@@ -158,8 +154,7 @@ public class MainServlet extends HttpServlet {
         Mat grayOrig = new Mat();
         Imgproc.cvtColor(img, grayOrig, Imgproc.COLOR_BGR2GRAY);
 
-        Imgcodecs.imwrite(inputFile.getParentFile()+"/final2.jpg", equ);
-        System.out.println("Image Processed");
+        Imgcodecs.imwrite(inputFile.getParentFile()+"/heavyBrightness.jpg", equ);
     }
 
     private static void adjustBrigtness(File inputFile) throws IOException {
@@ -170,7 +165,7 @@ public class MainServlet extends HttpServlet {
         applyCLAHE(mat, mat);
 
         BufferedImage biImgOut = Mat2BufferedImage(mat);
-        ImageIO.write(biImgOut, "jpg", new File(inputFile.getParentFile()+"/final.jpg"));
+        ImageIO.write(biImgOut, "jpg", new File(inputFile.getParentFile()+"/slightBritness.jpg"));
 
     }
 
@@ -185,11 +180,11 @@ public class MainServlet extends HttpServlet {
             Imgproc.blur(sourceImage, destImage, new Size(5.0, 5.0));
         }
         BufferedImage biImgOut = Mat2BufferedImage(destImage);
-        ImageIO.write(biImgOut, "jpg", new File(inputFile.getParentFile()+"/final4.jpg"));
+        ImageIO.write(biImgOut, "jpg", new File(inputFile.getParentFile()+"/blur.jpg"));
     }
 
     public static void compressJpeg(File imageFile) throws IOException {
-        File compressedImageFile = new File(imageFile.getParentFile()+"/final3.jpg");
+        File compressedImageFile = new File(imageFile.getParentFile()+"/compressed.jpg");
 
         InputStream is = new FileInputStream(imageFile);
         OutputStream os = new FileOutputStream(compressedImageFile);
