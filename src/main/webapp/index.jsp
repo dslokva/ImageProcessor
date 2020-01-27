@@ -83,7 +83,7 @@
                         <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel"
                              aria-labelledby="v-pills-home-tab">
                             <div class="row">
-                                <div class="col-12">
+                                <div class="col-10">
                                     <form action="imageProcess" method="post" enctype="multipart/form-data">
 
                                         <div class="form-group">
@@ -104,7 +104,7 @@
                                         String filesize = (String) request.getAttribute("filesize");
                                         if (msg != null && msg.length() > 0) {
 
-                                            out.println("<div class=\"toast\" role=\"alert\" aria-live=\"assertive\" aria-atomic=\"true\" data-delay=\"5000\" id=\"uploadMsg\">");
+                                            out.println("<div style=\"text-align: center;\"><div class=\"toast\" role=\"alert\" aria-live=\"assertive\" aria-atomic=\"true\" data-delay=\"5000\" id=\"uploadMsg\">");
                                             out.println("  <div class=\"toast-header\">");
                                             out.println("    <img class=\"rounded mr-2\">");
                                             out.println("    <strong class=\"mr-auto\">Ответ от сервера</strong>");
@@ -121,6 +121,7 @@
                                             out.println("<script>");
                                             out.println("     $(document).ready(function(){ $(\"#uploadMsg\").toast('show'); }); ");
                                             out.println("</script>");
+                                            out.println("</div>");
                                         }
                                     %>
                                 </div>
