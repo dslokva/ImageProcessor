@@ -54,7 +54,7 @@ public class MainServlet extends HttpServlet {
                                 adjustBrigtness(file);
                                 histogramEqualise(file);
                                 compressJpeg(file);
-                                blur(file, 6);
+                                blur(file, 4);
                             }
 
                             request.setAttribute("message", "Файл \"" + FilenameUtils.getName(file.getName()) + "\" загружен успешно.");
