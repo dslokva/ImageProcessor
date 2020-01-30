@@ -1,0 +1,15 @@
+#crSlider .slider-selection {
+    background: #f2f2f2;
+}
+
+#crSlider .slider-rangeHighlight.category1 {
+    background: #99CC00;
+}
+
+#crSlider .slider-rangeHighlight.category2 {
+    background: #FF9900;
+}
+
+#crSlider .slider-rangeHighlight.category3 {
+    background: #cc291d;
+}

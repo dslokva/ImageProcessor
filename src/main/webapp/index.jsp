@@ -5,6 +5,11 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
           integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
+    <%String pathWebcontent=request.getContextPath();%>
+    <link rel="stylesheet" href="<%=pathWebcontent%>/resources/bootstrap-slider.css">
+    <link rel="stylesheet" href="<%=pathWebcontent%>/resources/other.css">
+    <script src="<%=pathWebcontent%>/resources/bootstrap-slider.js"></script>
+
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
             integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
             crossorigin="anonymous"></script>
@@ -132,13 +137,22 @@
                              aria-labelledby="v-pills-profile-tab">
                             ...в разработке
                         </div>
-                        <div class="tab-pane fade" id="v-pills-messages" role="tabpanel"
-                             aria-labelledby="v-pills-messages-tab">
-                            ...в разработке
-                        </div>
                         <div class="tab-pane fade" id="v-pills-settings" role="tabpanel"
                              aria-labelledby="v-pills-settings-tab">
-                            ...в разработке
+                            <div class="container">
+                                <div class="row row-cols-1">
+                                    <div class="col">
+                                        <span class="badge badge-info" id="ex6CurrentSliderValLabel">Compression ratio %: <span id="compressRatioSliderVal">30</span></span>
+                                    </div>
+                                    <div class="col">
+                                        <input id="compressRatioSlider" data-slider-id="crSlider" type="text" data-slider-min="10"
+                                               data-slider-max="90" data-slider-step="1" data-slider-value="30"
+                                               data-slider-rangeHighlights='[{ "start": 10, "end": 30, "class": "category1" },
+                                                                     { "start": 31, "end": 69, "class": "category2" },
+                                                                     { "start": 70, "end": 90, "class": "category3"}]' />
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -155,5 +169,21 @@
     </tr>
 </table>
 
+<script>
+    $( document ).ready(function() {
+        console.log( "ready!" );
+
+        var slider = new Slider("#compressRatioSlider", {
+            tooltip_position:'left'
+        });
+        slider.on("slide", function(sliderValue) {
+            document.getElementById("compressRatioSliderVal").textContent = sliderValue;
+            localStorage.setItem("compressRatioValue", sliderValue);
+        });
+
+        $("#compressRatioSliderVal").text(localStorage.getItem("compressRatioValue"));
+        slider.setValue(localStorage.getItem("compressRatioValue"));
+    });
+</script>
 </body>
 </html>

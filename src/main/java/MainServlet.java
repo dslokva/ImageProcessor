@@ -45,7 +45,7 @@ public class MainServlet extends HttpServlet {
                     for (FileItem item : multiparts) {
                         if (item.getSize() > 0) {
                             String name = new File(item.getName()).getName();
-                            String relativeWebPath = "/WEB-INF/static/";
+                            String relativeWebPath = "/WEB-INF/output/";
                             String absoluteDiskPath = getServletContext().getRealPath(relativeWebPath);
                             file = new File(absoluteDiskPath + name);
                             item.write(file);
