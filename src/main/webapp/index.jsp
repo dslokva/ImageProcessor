@@ -2,25 +2,19 @@
 <html>
 <head>
     <title>Облачная обработка изображений</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <%String pathWebcontent = request.getContextPath();%>
+
+    <link rel="stylesheet" href="<%=pathWebcontent%>/resources/bootstrap.min.css">
     <link rel="stylesheet" href="<%=pathWebcontent%>/resources/bootstrap-slider.css">
     <link rel="stylesheet" href="<%=pathWebcontent%>/resources/other.css">
+
     <script src="<%=pathWebcontent%>/resources/bootstrap-slider.js"></script>
+    <script src="<%=pathWebcontent%>/resources/jquery-3.4.1.min.js"></script>
+    <script src="<%=pathWebcontent%>/resources/popper.min.js"></script>
+    <script src="<%=pathWebcontent%>/resources/bootstrap.min.js"></script>
 
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
-            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-            crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-            crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
-            integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
-            crossorigin="anonymous"></script>
-
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!-- bootstrap 4.x is supported. You can also use the bootstrap css 3.3.x versions -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.0.1/css/fileinput.min.css" media="all"
           rel="stylesheet" type="text/css"/>
@@ -88,8 +82,9 @@
                         <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel"
                              aria-labelledby="v-pills-home-tab">
                             <div class="row">
-                                <div class="col-12">
-                                    <form name="imageForm" action="imageProcess" method="post" enctype="multipart/form-data">
+                                <div class="col-10">
+                                    <form name="imageForm" action="imageProcess" method="post"
+                                          enctype="multipart/form-data">
 
                                         <div class="form-group">
                                             <input id="input-b3" name="input-b3[]" type="file" class="file" multiple
@@ -103,12 +98,14 @@
                                             </div>
                                         </div>
                                     </form>
+                                </div>
+                                <div class="col-10">
                                     <br/>
                                     <%
                                         String msg = (String) request.getAttribute("message");
                                         String filesize = (String) request.getAttribute("filesize");
                                         if (msg != null && msg.length() > 0 && filesize != null && !filesize.equals("")) {
-                                            out.println("<div style=\"text-align: center;\"><div class=\"toast\" role=\"alert\" aria-live=\"assertive\" aria-atomic=\"true\" data-delay=\"5000\" id=\"uploadMsg\">");
+                                            out.println("<div style=\"text-align: center;\"><div class=\"toast\" role=\"alert\" aria-live=\"assertive\" aria-atomic=\"true\" data-delay=\"8000\" id=\"uploadMsg\">");
                                             out.println("  <div class=\"toast-header\">");
                                             out.println("    <img class=\"rounded mr-2\">");
                                             out.println("    <strong class=\"mr-auto\">Ответ от сервера</strong>");
@@ -139,7 +136,8 @@
                         <div class="tab-pane fade" id="v-pills-settings" role="tabpanel"
                              aria-labelledby="v-pills-settings-tab">
                             <div class="container">
-                                <form name="settingForm" action="<%=request.getContextPath()%>/settingsProcess" method="post">
+                                <form name="settingForm" action="<%=request.getContextPath()%>/settingsProcess"
+                                      method="post">
                                     <div class="form-row">
                                         <div class="col">
                                             <label for="compressRatioSlider">Уровень компрессии (сжатие)</label>
@@ -164,7 +162,8 @@
                                     <br/>
                                     <div class="form-row">
                                         <div class="col">
-                                            <button type="submit" class="btn btn-success btn-sm">Сохранить настройки</button>
+                                            <button type="submit" class="btn btn-success btn-sm">Сохранить настройки
+                                            </button>
                                         </div>
                                         <div class="col">
 
