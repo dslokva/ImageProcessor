@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
           integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
-    <%String pathWebcontent=request.getContextPath();%>
+    <%String pathWebcontent = request.getContextPath();%>
     <link rel="stylesheet" href="<%=pathWebcontent%>/resources/bootstrap-slider.css">
     <link rel="stylesheet" href="<%=pathWebcontent%>/resources/other.css">
     <script src="<%=pathWebcontent%>/resources/bootstrap-slider.js"></script>
@@ -88,8 +88,8 @@
                         <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel"
                              aria-labelledby="v-pills-home-tab">
                             <div class="row">
-                                <div class="col-10">
-                                    <form action="imageProcess" method="post" enctype="multipart/form-data">
+                                <div class="col-12">
+                                    <form name="imageForm" action="imageProcess" method="post" enctype="multipart/form-data">
 
                                         <div class="form-group">
                                             <input id="input-b3" name="input-b3[]" type="file" class="file" multiple
@@ -97,18 +97,17 @@
                                                    data-language="ru"
                                                    data-msg-placeholder="Выберите файлы для обработки...">
                                             <br/>
-                                           <div style="text-align: center;">
-                                               <input class="btn btn-success" type="submit"
-                                                      value="Загрузить файл (ы)"/>
-                                           </div>
+                                            <div style="text-align: center;">
+                                                <input class="btn btn-success" type="submit"
+                                                       value="Загрузить файл (ы)"/>
+                                            </div>
                                         </div>
                                     </form>
                                     <br/>
                                     <%
                                         String msg = (String) request.getAttribute("message");
                                         String filesize = (String) request.getAttribute("filesize");
-                                        if (msg != null && msg.length() > 0) {
-
+                                        if (msg != null && msg.length() > 0 && filesize != null && !filesize.equals("")) {
                                             out.println("<div style=\"text-align: center;\"><div class=\"toast\" role=\"alert\" aria-live=\"assertive\" aria-atomic=\"true\" data-delay=\"5000\" id=\"uploadMsg\">");
                                             out.println("  <div class=\"toast-header\">");
                                             out.println("    <img class=\"rounded mr-2\">");
@@ -140,18 +139,41 @@
                         <div class="tab-pane fade" id="v-pills-settings" role="tabpanel"
                              aria-labelledby="v-pills-settings-tab">
                             <div class="container">
-                                <div class="row row-cols-1">
-                                    <div class="col">
-                                        <span class="badge badge-info" id="ex6CurrentSliderValLabel">Compression ratio %: <span id="compressRatioSliderVal">30</span></span>
+                                <form name="settingForm" action="<%=request.getContextPath()%>/settingsProcess" method="post">
+                                    <div class="form-row">
+                                        <div class="col">
+                                            <label for="compressRatioSlider">Уровень компрессии (сжатие)</label>
+                                            <input id="compressRatioSlider" data-slider-id="crSlider" type="text"
+                                                   data-slider-min="10" name="compressRatio"
+                                                   data-slider-max="90" data-slider-step="1" data-slider-value="30"/>
+                                            <span class="badge badge-secondary" id="compressRatioSliderVal">30</span>
+                                        </div>
+
+                                        <div class="col">
+                                            <label for="blurRatioSlider">Уровень размытия (blur)</label>
+                                            <input id="blurRatioSlider" data-slider-id="blurSlider" type="text"
+                                                   data-slider-min="10" name="blurRatio"
+                                                   data-slider-max="90" data-slider-step="1" data-slider-value="30"/>
+                                            <span class="badge badge-secondary" id="blurRatioSliderVal">30</span>
+                                        </div>
+
+                                        <div class="col">
+
+                                        </div>
                                     </div>
-                                    <div class="col">
-                                        <input id="compressRatioSlider" data-slider-id="crSlider" type="text" data-slider-min="10"
-                                               data-slider-max="90" data-slider-step="1" data-slider-value="30"
-                                               data-slider-rangeHighlights='[{ "start": 10, "end": 30, "class": "category1" },
-                                                                     { "start": 31, "end": 69, "class": "category2" },
-                                                                     { "start": 70, "end": 90, "class": "category3"}]' />
+                                    <br/>
+                                    <div class="form-row">
+                                        <div class="col">
+                                            <button type="submit" class="btn btn-success btn-sm">Сохранить настройки</button>
+                                        </div>
+                                        <div class="col">
+
+                                        </div>
+                                        <div class="col">
+
+                                        </div>
                                     </div>
-                                </div>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -170,19 +192,32 @@
 </table>
 
 <script>
-    $( document ).ready(function() {
-        console.log( "ready!" );
+    $(document).ready(function () {
+        console.log("ready!");
 
-        var slider = new Slider("#compressRatioSlider", {
-            tooltip_position:'left'
+        var compressSlider = new Slider("#compressRatioSlider", {
+            tooltip_position: 'left'
         });
-        slider.on("slide", function(sliderValue) {
+
+        var blurSlider = new Slider("#blurRatioSlider", {
+            tooltip_position: 'left'
+        });
+
+        compressSlider.on("slide", function (sliderValue) {
             document.getElementById("compressRatioSliderVal").textContent = sliderValue;
-            localStorage.setItem("compressRatioValue", sliderValue);
+            // localStorage.setItem("compressRatioValue", sliderValue);
         });
 
-        $("#compressRatioSliderVal").text(localStorage.getItem("compressRatioValue"));
-        slider.setValue(localStorage.getItem("compressRatioValue"));
+        blurSlider.on("slide", function (sliderValue) {
+            document.getElementById("blurRatioSliderVal").textContent = sliderValue;
+            // localStorage.setItem("blurRatioValue", sliderValue);
+        });
+
+        // $("#compressRatioSliderVal").text(localStorage.getItem("compressRatioValue"));
+        // compressSlider.setValue(localStorage.getItem("compressRatioValue"));
+        //
+        // $("#blurRatioSliderVal").text(localStorage.getItem("blurRatioValue"));
+        // blurSlider.setValue(localStorage.getItem("blurRatioValue"));
     });
 </script>
 </body>

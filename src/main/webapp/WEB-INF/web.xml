@@ -10,13 +10,19 @@
     <servlet-class>MainServlet</servlet-class>
   </servlet>
 
+  <servlet>
+    <servlet-name>SettingsServlet</servlet-name>
+    <servlet-class>SettingsServlet</servlet-class>
+  </servlet>
+
   <servlet-mapping>
     <servlet-name>MainServlet</servlet-name>
     <url-pattern>/imageProcess</url-pattern>
   </servlet-mapping>
 
-<!--  <servlet-mapping>-->
-<!--    <servlet-name>default</servlet-name>-->
-<!--    <url-pattern>/resources/*</url-pattern>-->
-<!--  </servlet-mapping>-->
+  <servlet-mapping>
+    <servlet-name>SettingsServlet</servlet-name>
+    <url-pattern>/settingsProcess</url-pattern>
+  </servlet-mapping>
+
 </web-app>
