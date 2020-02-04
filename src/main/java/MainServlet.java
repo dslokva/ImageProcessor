@@ -25,7 +25,6 @@ import org.opencv.imgproc.Imgproc;
 public class MainServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException, ServletException {
-//        httpServletResponse.getWriter().print("Hello from servlet");
         httpServletRequest.getRequestDispatcher("/index.jsp").forward(httpServletRequest, httpServletResponse);
     }
 

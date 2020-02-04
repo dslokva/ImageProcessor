@@ -9,38 +9,19 @@
     <link rel="stylesheet" href="<%=pathWebcontent%>/resources/bootstrap.min.css">
     <link rel="stylesheet" href="<%=pathWebcontent%>/resources/bootstrap-slider.css">
     <link rel="stylesheet" href="<%=pathWebcontent%>/resources/other.css">
+    <link rel="stylesheet" href="<%=pathWebcontent%>/resources/fileinput.min.css" media="all" type="text/css"/>
+    <link rel="stylesheet" href="<%=pathWebcontent%>/resources/fa-all.css">
 
     <script src="<%=pathWebcontent%>/resources/bootstrap-slider.js"></script>
     <script src="<%=pathWebcontent%>/resources/jquery-3.4.1.min.js"></script>
     <script src="<%=pathWebcontent%>/resources/popper.min.js"></script>
     <script src="<%=pathWebcontent%>/resources/bootstrap.min.js"></script>
-
-    <!-- bootstrap 4.x is supported. You can also use the bootstrap css 3.3.x versions -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.0.1/css/fileinput.min.css" media="all"
-          rel="stylesheet" type="text/css"/>
-
-    <!-- the font awesome icon library if using with `fas` theme (or Bootstrap 4.x). Note that default icons used in the plugin are glyphicons that are bundled only with Bootstrap 3.x. -->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" crossorigin="anonymous">
-
-    <!-- piexif.min.js is needed for auto orienting image files OR when restoring exif data in resized images and when you
-        wish to resize images before upload. This must be loaded before fileinput.min.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.0.1/js/plugins/piexif.min.js"
-            type="text/javascript"></script>
-    <!-- sortable.min.js is only needed if you wish to sort / rearrange files in initial preview.
-        This must be loaded before fileinput.min.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.0.1/js/plugins/sortable.min.js"
-            type="text/javascript"></script>
-    <!-- purify.min.js is only needed if you wish to purify HTML content in your preview for
-        HTML files. This must be loaded before fileinput.min.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.0.1/js/plugins/purify.min.js"
-            type="text/javascript"></script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.0.1/js/fileinput.min.js"></script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.0.1/js/locales/ru.js"></script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.0.1/themes/fas/theme.min.js"></script>
-
+    <script src="<%=pathWebcontent%>/resources/piexif.min.js" type="text/javascript"></script>
+    <script src="<%=pathWebcontent%>/resources/sortable.min.js" type="text/javascript"></script>
+    <script src="<%=pathWebcontent%>/resources/purify.min.js" type="text/javascript"></script>
+    <script src="<%=pathWebcontent%>/resources/fileinput.min.js"></script>
+    <script src="<%=pathWebcontent%>/resources/fileinput-ru.js"></script>
+    <script src="<%=pathWebcontent%>/resources/theme.min.js"></script>
 
 </head>
 
@@ -101,30 +82,32 @@
                                 </div>
                                 <div class="col-10">
                                     <br/>
-                                    <%
-                                        String msg = (String) request.getAttribute("message");
-                                        String filesize = (String) request.getAttribute("filesize");
-                                        if (msg != null && msg.length() > 0 && filesize != null && !filesize.equals("")) {
-                                            out.println("<div style=\"text-align: center;\"><div class=\"toast\" role=\"alert\" aria-live=\"assertive\" aria-atomic=\"true\" data-delay=\"8000\" id=\"uploadMsg\">");
-                                            out.println("  <div class=\"toast-header\">");
-                                            out.println("    <img class=\"rounded mr-2\">");
-                                            out.println("    <strong class=\"mr-auto\">Ответ от сервера</strong>");
-                                            out.println("    <small class=\"text-muted\">" + filesize + "</small>");
-                                            out.println("    <button type=\"button\" class=\"ml-2 mb-1 close\" data-dismiss=\"toast\" aria-label=\"Close\">");
-                                            out.println("      <span aria-hidden=\"true\">&times;</span>");
-                                            out.println("    </button>");
-                                            out.println("  </div>");
-                                            out.println("  <div class=\"toast-body\">");
-                                            out.println(msg);
-                                            out.println("  </div>");
-                                            out.println("</div>");
+                                    <div aria-live="polite" aria-atomic="true"
+                                         class="d-flex justify-content-center align-items-center">
+                                        <%
+                                            String msg = (String) request.getAttribute("message");
+                                            String filesize = (String) request.getAttribute("filesize");
+                                            if (msg != null && msg.length() > 0) {
+                                                out.println("<div class=\"toast\" role=\"alert\" aria-live=\"assertive\" aria-atomic=\"true\" data-delay=\"8000\" id=\"uploadMsg\">");
+                                                out.println("  <div class=\"toast-header\">");
+                                                out.println("    <img class=\"rounded mr-2\">");
+                                                out.println("    <strong class=\"mr-auto\">Ответ от сервера</strong>");
+                                                out.println("    <small class=\"text-muted\">" + filesize + "</small>");
+                                                out.println("    <button type=\"button\" class=\"ml-2 mb-1 close\" data-dismiss=\"toast\" aria-label=\"Close\">");
+                                                out.println("      <span aria-hidden=\"true\">&times;</span>");
+                                                out.println("    </button>");
+                                                out.println("  </div>");
+                                                out.println("  <div class=\"toast-body\">");
+                                                out.println(msg);
+                                                out.println("  </div>");
+                                                out.println("</div>");
 
-                                            out.println("<script>");
-                                            out.println("     $(document).ready(function(){ $(\"#uploadMsg\").toast('show'); }); ");
-                                            out.println("</script>");
-                                            out.println("</div>");
-                                        }
-                                    %>
+                                                out.println("<script>");
+                                                out.println("     $(document).ready(function(){ $(\"#uploadMsg\").toast('show'); }); ");
+                                                out.println("</script>");
+                                            }
+                                        %>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -204,19 +187,17 @@
 
         compressSlider.on("slide", function (sliderValue) {
             document.getElementById("compressRatioSliderVal").textContent = sliderValue;
-            // localStorage.setItem("compressRatioValue", sliderValue);
         });
 
         blurSlider.on("slide", function (sliderValue) {
             document.getElementById("blurRatioSliderVal").textContent = sliderValue;
-            // localStorage.setItem("blurRatioValue", sliderValue);
         });
 
-        // $("#compressRatioSliderVal").text(localStorage.getItem("compressRatioValue"));
-        // compressSlider.setValue(localStorage.getItem("compressRatioValue"));
-        //
-        // $("#blurRatioSliderVal").text(localStorage.getItem("blurRatioValue"));
-        // blurSlider.setValue(localStorage.getItem("blurRatioValue"));
+        $("#compressRatioSliderVal").text(<%= request.getAttribute("compressRatio") %>);
+        compressSlider.setValue(<%= request.getAttribute("compressRatio") %>);
+
+        $("#blurRatioSliderVal").text(<%= request.getAttribute("blurRatio") %>);
+        blurSlider.setValue(<%= request.getAttribute("blurRatio") %>);
     });
 </script>
 </body>

@@ -25,4 +25,15 @@
     <url-pattern>/settingsProcess</url-pattern>
   </servlet-mapping>
 
+  <filter>
+    <filter-name>MainFilter</filter-name>
+    <filter-class>MainFilter</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>MainFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
 </web-app>
+
