@@ -19,12 +19,24 @@ public class SettingsServlet extends HttpServlet {
         String blurParam = request.getParameter("blurRatio");
         String compressEnabled = request.getParameter("compressEnabled");
         String blurEnabled = request.getParameter("blurEnabled");
+        String lightUpEnabled = request.getParameter("lightUpEnabled");
+        String histogramUpEnabled = request.getParameter("histogramUpEnabled");
 
         SettingsStore settings = SettingsStore.getInstance();
         if (blurParam != null)
             settings.setBlurRatio(Integer.valueOf(blurParam));
         if (compressParam != null)
             settings.setCompressionRatio(Integer.valueOf(compressParam));
+
+        if (lightUpEnabled != null)
+            settings.setLightUpEnabledEnabled(lightUpEnabled);
+        else
+            settings.setLightUpEnabledEnabled("");
+
+        if (histogramUpEnabled != null)
+            settings.setHistogramUpEnabled(histogramUpEnabled);
+        else
+            settings.setHistogramUpEnabled("");
 
         if (blurEnabled != null)
             settings.setBlurEnabled(blurEnabled);
@@ -38,8 +50,8 @@ public class SettingsServlet extends HttpServlet {
 
         request.setAttribute("blurRatio", settings.getBlurRatio());
         request.setAttribute("compressRatio", settings.getCompressionRatio());
-        request.setAttribute("blurEnabled", settings.getBlurEnabled());
-        request.setAttribute("compressEnabled", settings.getCompressEnabled());
+        request.setAttribute("lightUpEnabled", settings.getLightUpEnabled());
+        request.setAttribute("histogramUpEnabled", settings.getHistogramUpEnabled());
         request.getRequestDispatcher("/index.jsp").forward(request, response);
     }
 

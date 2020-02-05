@@ -52,6 +52,8 @@ public class MainServlet extends HttpServlet {
                                 SettingsStore settings = SettingsStore.getInstance();
                                 String compressEnabled = settings.getCompressEnabled();
                                 String blurEnabled = settings.getBlurEnabled();
+                                String histogramUpEnabled = settings.getHistogramUpEnabled();
+                                String lightUpEnabled = settings.getLightUpEnabled();
 
                                 if (compressEnabled != null && compressEnabled.equals("checked"))
                                     compressJpeg(file);
@@ -59,8 +61,11 @@ public class MainServlet extends HttpServlet {
                                 if (blurEnabled != null && blurEnabled.equals("checked"))
                                      blur(file, 4);
 
-                                histogramEqualise(file);
-                                adjustBrigtness(file);
+                                if (histogramUpEnabled != null && histogramUpEnabled.equals("checked"))
+                                    histogramEqualise(file);
+
+                                if (lightUpEnabled != null && lightUpEnabled.equals("checked"))
+                                    adjustBrigtness(file);
                             }
 
                             request.setAttribute("message", "Файл \"" + FilenameUtils.getName(file.getName()) + "\" загружен успешно.");

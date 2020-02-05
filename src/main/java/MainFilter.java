@@ -11,6 +11,8 @@ public class MainFilter implements Filter {
         req.setAttribute("compressRatio", settings.getCompressionRatio());
         req.setAttribute("blurEnabled", settings.getBlurEnabled());
         req.setAttribute("compressEnabled", settings.getCompressEnabled());
+        req.setAttribute("lightUpEnabled", settings.getLightUpEnabled());
+        req.setAttribute("histogramUpEnabled", settings.getHistogramUpEnabled());
 
         chain.doFilter(req, resp);
     }

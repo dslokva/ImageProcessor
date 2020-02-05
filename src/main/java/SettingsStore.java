@@ -10,6 +10,8 @@ public class SettingsStore {
     private Integer compressionRatio;
     private String compressEnabled;
     private String blurEnabled;
+    private String histogramUpEnabled;
+    private String lightUpEnabled;
     private static Ini iniFile;
 
     public SettingsStore() {
@@ -58,6 +60,14 @@ public class SettingsStore {
         return result;
     }
 
+    public String getHistogramUpEnabled() {
+        return histogramUpEnabled;
+    }
+
+    public String getLightUpEnabled() {
+        return lightUpEnabled;
+    }
+
     public String getCompressEnabled() {
         return compressEnabled;
     }
@@ -88,6 +98,20 @@ public class SettingsStore {
         if (enabled != null && enabled.equals("on"))
             blurEnabled = "checked";
         saveToIni("blurEnabled", blurEnabled);
+    }
+
+   public void setHistogramUpEnabled(String enabled) {
+        histogramUpEnabled = "";
+        if (enabled != null && enabled.equals("on"))
+            histogramUpEnabled = "checked";
+        saveToIni("histogramUpEnabled", histogramUpEnabled);
+    }
+
+   public void setLightUpEnabledEnabled(String enabled) {
+        lightUpEnabled = "";
+        if (enabled != null && enabled.equals("on"))
+            lightUpEnabled = "checked";
+        saveToIni("lightUpEnabled", lightUpEnabled);
     }
 
 

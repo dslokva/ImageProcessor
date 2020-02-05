@@ -203,8 +203,8 @@
                                             <div class="custom-control custom-checkbox">
                                                 <input type="checkbox" class="custom-control-input"
                                                        name="lightUpEnabled"
-                                                       id="chklightUpEnabled">
-                                                <label class="custom-control-label" for="chklightUpEnabled">Выравнивание
+                                                       id="chkLightUpEnabled">
+                                                <label class="custom-control-label" for="chkLightUpEnabled">Выравнивание
                                                     яркости</label>
                                             </div>
                                         </div>
@@ -282,6 +282,8 @@
 
         $('#chkCompressEnabled').prop('checked', '<%= request.getAttribute("compressEnabled") %>');
         $('#chkBlurEnabled').prop('checked', '<%= request.getAttribute("blurEnabled") %>');
+        $('#chkHistogramUpEnabled').prop('checked', '<%= request.getAttribute("histogramUpEnabled") %>');
+        $('#chkLightUpEnabled').prop('checked', '<%= request.getAttribute("lightUpEnabled") %>');
 
         console.log("ready!");
     });
