@@ -49,10 +49,18 @@ public class MainServlet extends HttpServlet {
                             item.write(file);
 
                             if (file.length() > 0) {
-                                adjustBrigtness(file);
+                                SettingsStore settings = SettingsStore.getInstance();
+                                String compressEnabled = settings.getCompressEnabled();
+                                String blurEnabled = settings.getBlurEnabled();
+
+                                if (compressEnabled != null && compressEnabled.equals("checked"))
+                                    compressJpeg(file);
+
+                                if (blurEnabled != null && blurEnabled.equals("checked"))
+                                     blur(file, 4);
+
                                 histogramEqualise(file);
-                                compressJpeg(file);
-                                blur(file, 4);
+                                adjustBrigtness(file);
                             }
 
                             request.setAttribute("message", "Файл \"" + FilenameUtils.getName(file.getName()) + "\" загружен успешно.");

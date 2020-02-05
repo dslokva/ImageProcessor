@@ -132,7 +132,8 @@
                                             <tr>
                                                 <th scope="row">1</th>
                                                 <td class="w-25">
-                                                    <img src="https://s3.eu-central-1.amazonaws.com/bootstrapbaymisc/blog/24_days_bootstrap/sheep-3.jpg" class="img-fluid img-thumbnail" alt="Sheep">
+                                                    <img src="https://s3.eu-central-1.amazonaws.com/bootstrapbaymisc/blog/24_days_bootstrap/sheep-3.jpg"
+                                                         class="img-fluid img-thumbnail" alt="Sheep" data-toggle="modal" data-target="#exampleModal">
                                                 </td>
                                                 <td>Bootstrap 4 CDN and Starter Template</td>
                                                 <td>Cristina</td>
@@ -142,7 +143,8 @@
                                             <tr>
                                                 <th scope="row">2</th>
                                                 <td class="w-25">
-                                                    <img src="https://s3.eu-central-1.amazonaws.com/bootstrapbaymisc/blog/24_days_bootstrap/sheep-5.jpg" class="img-fluid img-thumbnail" alt="Sheep">
+                                                    <img src="https://s3.eu-central-1.amazonaws.com/bootstrapbaymisc/blog/24_days_bootstrap/sheep-5.jpg"
+                                                         class="img-fluid img-thumbnail" alt="Sheep">
                                                 </td>
                                                 <td>Bootstrap Grid 4 Tutorial and Examples</td>
                                                 <td>Cristina</td>
@@ -164,29 +166,31 @@
                                         <div class="col">
                                             <div class="custom-control custom-checkbox">
                                                 <input type="checkbox" class="custom-control-input"
-                                                       onChange="chkCompressClick()" name="compressEnabled" id="chkCompressEnabled">
+                                                       name="compressEnabled" id="chkCompressEnabled">
                                                 <label class="custom-control-label" for="chkCompressEnabled">Сжимать
                                                     изображение</label>
                                             </div>
                                             <label id="label1" for="compressRatioSlider">Уровень компрессии:</label>
                                             <input id="compressRatioSlider" data-slider-id="crSlider" type="text"
                                                    data-slider-min="10" name="compressRatio"
-                                                   data-slider-max="90" data-slider-step="1" data-slider-value="30"/>
-                                            <span class="badge badge-secondary" id="compressRatioSliderVal">30</span>
+                                                   data-slider-max="90" data-slider-step="1"
+                                                   data-slider-value="30"/>
+                                            <span class="badge badge-secondary"
+                                                  id="compressRatioSliderVal">30</span>
                                         </div>
-
                                         <div class="col">
                                             <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" name="blurEnabled"
+                                                <input type="checkbox" class="custom-control-input"
+                                                       name="blurEnabled"
                                                        id="chkBlurEnabled">
                                                 <label class="custom-control-label" for="chkBlurEnabled">Применять
                                                     размытие</label>
                                             </div>
                                             <label for="blurRatioSlider">Уровень размытия (blur)</label>
                                             <input id="blurRatioSlider" data-slider-id="blurSlider" type="text"
-                                                   data-slider-min="10" name="blurRatio"
-                                                   data-slider-max="90" data-slider-step="1" data-slider-value="30"/>
-                                            <span class="badge badge-secondary" id="blurRatioSliderVal">30</span>
+                                                   data-slider-min="2" name="blurRatio"
+                                                   data-slider-max="5" data-slider-step="1" data-slider-value="3"/>
+                                            <span class="badge badge-secondary" id="blurRatioSliderVal">3</span>
                                         </div>
 
                                         <div class="col">
@@ -196,7 +200,35 @@
                                     <br/>
                                     <div class="form-row">
                                         <div class="col">
-                                            <button type="submit" class="btn btn-success btn-sm">Сохранить настройки
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input"
+                                                       name="lightUpEnabled"
+                                                       id="chklightUpEnabled">
+                                                <label class="custom-control-label" for="chklightUpEnabled">Выравнивание
+                                                    яркости</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col">
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input"
+                                                       name="histogramUpEnabled"
+                                                       id="chkHistogramUpEnabled">
+                                                <label class="custom-control-label" for="chkHistogramUpEnabled">Засветка
+                                                    изображения</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col">
+
+                                        </div>
+                                    </div>
+
+                                    <br/>
+                                    <div class="form-row">
+                                        <div class="col">
+                                            <button type="submit" class="btn btn-success btn-sm">Сохранить
+                                                настройки
                                             </button>
                                         </div>
                                         <div class="col">
@@ -259,5 +291,27 @@
     }
 
 </script>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>
