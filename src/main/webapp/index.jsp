@@ -114,7 +114,46 @@
 
                         <div class="tab-pane fade" id="v-pills-profile" role="tabpanel"
                              aria-labelledby="v-pills-profile-tab">
-                            ...в разработке
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <table class="table table-image">
+                                            <thead>
+                                            <tr>
+                                                <th scope="col">Day</th>
+                                                <th scope="col">Image</th>
+                                                <th scope="col">Article Name</th>
+                                                <th scope="col">Author</th>
+                                                <th scope="col">Words</th>
+                                                <th scope="col">Shares</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr>
+                                                <th scope="row">1</th>
+                                                <td class="w-25">
+                                                    <img src="https://s3.eu-central-1.amazonaws.com/bootstrapbaymisc/blog/24_days_bootstrap/sheep-3.jpg" class="img-fluid img-thumbnail" alt="Sheep">
+                                                </td>
+                                                <td>Bootstrap 4 CDN and Starter Template</td>
+                                                <td>Cristina</td>
+                                                <td>913</td>
+                                                <td>2.846</td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row">2</th>
+                                                <td class="w-25">
+                                                    <img src="https://s3.eu-central-1.amazonaws.com/bootstrapbaymisc/blog/24_days_bootstrap/sheep-5.jpg" class="img-fluid img-thumbnail" alt="Sheep">
+                                                </td>
+                                                <td>Bootstrap Grid 4 Tutorial and Examples</td>
+                                                <td>Cristina</td>
+                                                <td>1.434</td>
+                                                <td>3.417</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="tab-pane fade" id="v-pills-settings" role="tabpanel"
                              aria-labelledby="v-pills-settings-tab">
@@ -123,7 +162,13 @@
                                       method="post">
                                     <div class="form-row">
                                         <div class="col">
-                                            <label for="compressRatioSlider">Уровень компрессии (сжатие)</label>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input"
+                                                       onChange="chkCompressClick()" name="compressEnabled" id="chkCompressEnabled">
+                                                <label class="custom-control-label" for="chkCompressEnabled">Сжимать
+                                                    изображение</label>
+                                            </div>
+                                            <label id="label1" for="compressRatioSlider">Уровень компрессии:</label>
                                             <input id="compressRatioSlider" data-slider-id="crSlider" type="text"
                                                    data-slider-min="10" name="compressRatio"
                                                    data-slider-max="90" data-slider-step="1" data-slider-value="30"/>
@@ -131,6 +176,12 @@
                                         </div>
 
                                         <div class="col">
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" name="blurEnabled"
+                                                       id="chkBlurEnabled">
+                                                <label class="custom-control-label" for="chkBlurEnabled">Применять
+                                                    размытие</label>
+                                            </div>
                                             <label for="blurRatioSlider">Уровень размытия (blur)</label>
                                             <input id="blurRatioSlider" data-slider-id="blurSlider" type="text"
                                                    data-slider-min="10" name="blurRatio"
@@ -175,8 +226,6 @@
 
 <script>
     $(document).ready(function () {
-        console.log("ready!");
-
         var compressSlider = new Slider("#compressRatioSlider", {
             tooltip_position: 'left'
         });
@@ -198,7 +247,17 @@
 
         $("#blurRatioSliderVal").text(<%= request.getAttribute("blurRatio") %>);
         blurSlider.setValue(<%= request.getAttribute("blurRatio") %>);
+
+        $('#chkCompressEnabled').prop('checked', '<%= request.getAttribute("compressEnabled") %>');
+        $('#chkBlurEnabled').prop('checked', '<%= request.getAttribute("blurEnabled") %>');
+
+        console.log("ready!");
     });
+
+    function chkCompressClick() {
+
+    }
+
 </script>
 </body>
 </html>

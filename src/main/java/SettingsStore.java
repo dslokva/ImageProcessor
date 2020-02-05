@@ -8,7 +8,9 @@ public class SettingsStore {
     private static volatile SettingsStore instance;
     private Integer blurRatio;
     private Integer compressionRatio;
-    private Ini iniFile;
+    private String compressEnabled;
+    private String blurEnabled;
+    private static Ini iniFile;
 
     public SettingsStore() {
         initSavedSettings();
@@ -20,11 +22,18 @@ public class SettingsStore {
             String filePath = Objects.requireNonNull(classLoader.getResource("../../resources/main.ini")).getFile();
             iniFile = new Ini(new File(filePath));
 
+            blurEnabled = checkOnStr(iniFile.get("ProcessingSettings", "blurEnabled"));
+            setBlurEnabled(blurEnabled);
+
+            compressEnabled = checkOnStr(iniFile.get("ProcessingSettings", "compressEnabled"));
+            setCompressEnabled(compressEnabled);
+
             blurRatio = checkInt(iniFile.get("ProcessingSettings", "blurRatio"));
             setBlurRatio(blurRatio);
 
             compressionRatio = checkInt(iniFile.get("ProcessingSettings", "compressRatio"));
             setCompressionRatio(compressionRatio);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -41,16 +50,48 @@ public class SettingsStore {
         return result;
     }
 
+    private String checkOnStr(String a) {
+        String result = "off";
+        if (a != null && a.equals("on"))
+            result = "on";
+
+        return result;
+    }
+
+    public String getCompressEnabled() {
+        return compressEnabled;
+    }
+
+    public String getBlurEnabled() {
+        return blurEnabled;
+    }
+
+
+    public void setCompressEnabled(String enabled) {
+        compressEnabled = "";
+        if (enabled != null && enabled.equals("on"))
+            compressEnabled = "checked";
+        saveToIni("compressEnabled", compressEnabled);
+    }
+
     public Integer getBlurRatio() {
         return blurRatio;
     }
 
     public void setBlurRatio(Integer blurRatio) {
         this.blurRatio = blurRatio;
-        saveIntToIni("blurRatio", blurRatio);
+        saveToIni("blurRatio", blurRatio);
     }
 
-    private void saveIntToIni(String key, Integer value) {
+    public void setBlurEnabled(String enabled) {
+        blurEnabled = "";
+        if (enabled != null && enabled.equals("on"))
+            blurEnabled = "checked";
+        saveToIni("blurEnabled", blurEnabled);
+    }
+
+
+    private void saveToIni(String key, Object value) {
         try {
             if (iniFile != null) {
                 iniFile.put("ProcessingSettings", key, value);
@@ -68,7 +109,7 @@ public class SettingsStore {
 
     public void setCompressionRatio(Integer compressionRatio) {
         this.compressionRatio = compressionRatio;
-        saveIntToIni("compressRatio", compressionRatio);
+        saveToIni("compressRatio", compressionRatio);
     }
 
     public static SettingsStore getInstance() {
@@ -81,6 +122,11 @@ public class SettingsStore {
                 }
             }
         }
+//        try {
+//            iniFile.
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
         return localInstance;
     }
 }
