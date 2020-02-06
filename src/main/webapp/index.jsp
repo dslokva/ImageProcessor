@@ -120,37 +120,33 @@
                                         <table class="table table-image">
                                             <thead>
                                             <tr>
-                                                <th scope="col">Day</th>
+                                                <th scope="col">Date</th>
                                                 <th scope="col">Image</th>
-                                                <th scope="col">Article Name</th>
-                                                <th scope="col">Author</th>
-                                                <th scope="col">Words</th>
-                                                <th scope="col">Shares</th>
+                                                <th scope="col">Original size</th>
+                                                <th scope="col">Compressed size</th>
                                             </tr>
                                             </thead>
                                             <tbody>
                                             <tr>
-                                                <th scope="row">1</th>
+                                                <td>06-02-2020 21-35</td>
                                                 <td class="w-25">
                                                     <img src="https://s3.eu-central-1.amazonaws.com/bootstrapbaymisc/blog/24_days_bootstrap/sheep-3.jpg"
                                                          class="img-fluid img-thumbnail" alt="Sheep" data-toggle="modal" data-target="#exampleModal">
                                                 </td>
-                                                <td>Bootstrap 4 CDN and Starter Template</td>
-                                                <td>Cristina</td>
-                                                <td>913</td>
-                                                <td>2.846</td>
+                                                <td>913 kb</td>
+                                                <td>348 kb</td>
                                             </tr>
+
                                             <tr>
-                                                <th scope="row">2</th>
+                                                <td>05-02-2020 20-42</td>
                                                 <td class="w-25">
                                                     <img src="https://s3.eu-central-1.amazonaws.com/bootstrapbaymisc/blog/24_days_bootstrap/sheep-5.jpg"
                                                          class="img-fluid img-thumbnail" alt="Sheep">
                                                 </td>
-                                                <td>Bootstrap Grid 4 Tutorial and Examples</td>
-                                                <td>Cristina</td>
                                                 <td>1.434</td>
                                                 <td>3.417</td>
                                             </tr>
+
                                             </tbody>
                                         </table>
                                     </div>
@@ -299,8 +295,8 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <h5 class="modal-title" id="exampleModalLabel">Результат обработки</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -308,8 +304,8 @@
                 ...
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Закрыть</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Удалить</button>
             </div>
         </div>
     </div>

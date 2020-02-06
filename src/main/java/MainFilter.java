@@ -1,7 +1,12 @@
 import javax.servlet.*;
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class MainFilter implements Filter {
+
     public void destroy() {
     }
 
@@ -13,6 +18,10 @@ public class MainFilter implements Filter {
         req.setAttribute("compressEnabled", settings.getCompressEnabled());
         req.setAttribute("lightUpEnabled", settings.getLightUpEnabled());
         req.setAttribute("histogramUpEnabled", settings.getHistogramUpEnabled());
+
+        String absoluteDiskPath = req.getServletContext().getRealPath("/WEB-INF/output/");
+
+        settings.updateGalleryList(absoluteDiskPath);
 
         chain.doFilter(req, resp);
     }

@@ -25,6 +25,7 @@ import org.opencv.imgproc.Imgproc;
 public class MainServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException, ServletException {
+
         httpServletRequest.getRequestDispatcher("/index.jsp").forward(httpServletRequest, httpServletResponse);
     }
 
@@ -43,8 +44,7 @@ public class MainServlet extends HttpServlet {
                     for (FileItem item : multiparts) {
                         if (item.getSize() > 0) {
                             String name = new File(item.getName()).getName();
-                            String relativeWebPath = "/WEB-INF/output/";
-                            String absoluteDiskPath = getServletContext().getRealPath(relativeWebPath);
+                            String absoluteDiskPath = getServletContext().getRealPath("/WEB-INF/output/");
                             file = new File(absoluteDiskPath + name);
                             item.write(file);
 
