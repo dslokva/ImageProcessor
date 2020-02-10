@@ -19,9 +19,10 @@ public class MainFilter implements Filter {
         req.setAttribute("lightUpEnabled", settings.getLightUpEnabled());
         req.setAttribute("histogramUpEnabled", settings.getHistogramUpEnabled());
 
-        String absoluteDiskPath = req.getServletContext().getRealPath("/WEB-INF/output/");
+        String absoluteDiskPath = req.getServletContext().getRealPath("/output/");
 
         settings.updateGalleryList(absoluteDiskPath);
+        req.setAttribute("galleryList", settings.getGalleryList());
 
         chain.doFilter(req, resp);
     }

@@ -40,15 +40,16 @@ public class MainServlet extends HttpServlet {
             try {
                 List<FileItem> multiparts = new ServletFileUpload(new DiskFileItemFactory()).parseRequest(request);
                 if (!multiparts.isEmpty()) {
-                    File file = null;
+                    File fileOut = null;
                     for (FileItem item : multiparts) {
                         if (item.getSize() > 0) {
-                            String name = new File(item.getName()).getName();
-                            String absoluteDiskPath = getServletContext().getRealPath("/WEB-INF/output/");
-                            file = new File(absoluteDiskPath + name);
-                            item.write(file);
+                            File receivedItem = new File(item.getName());
+                            String originalFileName = receivedItem.getName();
+                            String absoluteDiskPath = getServletContext().getRealPath("/output/");
+                            fileOut = new File(absoluteDiskPath + FilenameUtils.getBaseName(receivedItem.getName()) + "/original.jpg");
+                            item.write(fileOut);
 
-                            if (file.length() > 0) {
+                            if (fileOut.length() > 0) {
                                 SettingsStore settings = SettingsStore.getInstance();
                                 String compressEnabled = settings.getCompressEnabled();
                                 String blurEnabled = settings.getBlurEnabled();
@@ -56,20 +57,20 @@ public class MainServlet extends HttpServlet {
                                 String lightUpEnabled = settings.getLightUpEnabled();
 
                                 if (compressEnabled != null && compressEnabled.equals("checked"))
-                                    compressJpeg(file);
+                                    compressJpeg(fileOut);
 
                                 if (blurEnabled != null && blurEnabled.equals("checked"))
-                                     blur(file, 4);
+                                     blur(fileOut, 4);
 
                                 if (histogramUpEnabled != null && histogramUpEnabled.equals("checked"))
-                                    histogramEqualise(file);
+                                    histogramEqualise(fileOut);
 
                                 if (lightUpEnabled != null && lightUpEnabled.equals("checked"))
-                                    adjustBrigtness(file);
+                                    adjustBrigtness(fileOut);
                             }
 
-                            request.setAttribute("message", "Файл \"" + FilenameUtils.getName(file.getName()) + "\" загружен успешно.");
-                            request.setAttribute("filesize", getFileSizeKiloBytes(file));
+                            request.setAttribute("message", "Файл \"" + originalFileName + "\" загружен успешно.");
+                            request.setAttribute("filesize", getFileSizeKiloBytes(fileOut));
                             request.setAttribute("errorCode", 0);
                         } else {
                             request.setAttribute("message", "Файл не выбран!");
@@ -91,7 +92,6 @@ public class MainServlet extends HttpServlet {
         DecimalFormat df = new DecimalFormat("#.###");
         df.setRoundingMode(RoundingMode.CEILING);
         return df.format(file.length() / 1024) + "  kb";
-
     }
 
     private static void applyCLAHE(Mat srcArry, Mat dstArry) {

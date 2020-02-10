@@ -1,3 +1,7 @@
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.HashMap" %>
+<%@ page import="java.util.Iterator" %>
+<%@ page import="java.util.Map" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -120,32 +124,49 @@
                                         <table class="table table-image">
                                             <thead>
                                             <tr>
-                                                <th scope="col">Date</th>
-                                                <th scope="col">Image</th>
-                                                <th scope="col">Original size</th>
-                                                <th scope="col">Compressed size</th>
+                                                <th scope="col">Дата</th>
+                                                <th scope="col">Изображение</th>
+                                                <th scope="col">Оригинальный размер</th>
+                                                <th scope="col">Сжатый размер</th>
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr>
-                                                <td>06-02-2020 21-35</td>
-                                                <td class="w-25">
-                                                    <img src="https://s3.eu-central-1.amazonaws.com/bootstrapbaymisc/blog/24_days_bootstrap/sheep-3.jpg"
-                                                         class="img-fluid img-thumbnail" alt="Sheep" data-toggle="modal" data-target="#exampleModal">
-                                                </td>
-                                                <td>913 kb</td>
-                                                <td>348 kb</td>
-                                            </tr>
 
-                                            <tr>
-                                                <td>05-02-2020 20-42</td>
-                                                <td class="w-25">
-                                                    <img src="https://s3.eu-central-1.amazonaws.com/bootstrapbaymisc/blog/24_days_bootstrap/sheep-5.jpg"
-                                                         class="img-fluid img-thumbnail" alt="Sheep">
-                                                </td>
-                                                <td>1.434</td>
-                                                <td>3.417</td>
-                                            </tr>
+                                            <%
+                                                HashMap<String, HashMap> galleryList = (HashMap<String, HashMap>) request.getAttribute("galleryList");
+                                                if (galleryList != null) {
+                                                    Iterator it = galleryList.entrySet().iterator();
+                                                    while (it.hasNext()) {
+                                                        Map.Entry pair = (Map.Entry) it.next();
+                                                        String folderName = (String) pair.getKey();
+                                                        HashMap<String, HashMap> detailsMap = (HashMap<String, HashMap>) pair.getValue();
+
+                                                        Iterator it2 = detailsMap.entrySet().iterator();
+                                                        while (it2.hasNext()) {
+                                                            Map.Entry pair2 = (Map.Entry) it2.next();
+                                                            String fileName = (String) pair2.getKey();
+                                                            HashMap<String, String> fileDetails = (HashMap<String, String>) pair2.getValue();
+
+
+                                                            if (fileName.endsWith("original.jpg")) {
+                                                                out.println("<tr>");
+                                                                out.println("<td>" +fileDetails.get("createDateTime")+ "</td>");
+
+                                                                out.println("<td class=\"w-25\">");
+                                                                out.println("<img src=\"" + fileDetails.get("imgLink") + "\" class=\"img-fluid img-thumbnail\" alt=\"Sheep\" data-toggle=\"modal\" data-target=\"#exampleModal\">");
+                                                                out.println("</td>");
+
+                                                                out.println("<td>"+fileDetails.get("compressedSize")+"</td>");
+                                                                out.println("<td>"+fileDetails.get("size")+"</td>");
+                                                                out.println("</tr>");
+                                                            }
+                                                        }
+                                                    }
+                                                } else {
+                                                    out.println("<tr><td> No items. </td></tr>");
+                                                }
+                                            %>
+
 
                                             </tbody>
                                         </table>
@@ -291,7 +312,8 @@
 </script>
 
 <!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">

@@ -2,6 +2,16 @@ import org.ini4j.Ini;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.RoundingMode;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributeView;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.FileTime;
+import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +26,7 @@ public class SettingsStore {
     private String histogramUpEnabled;
     private String lightUpEnabled;
     private static Ini iniFile;
-    private HashMap<String, List> galleryList;
+    private HashMap<String, HashMap> galleryList;
 
     public SettingsStore() {
         initSavedSettings();
@@ -110,14 +120,14 @@ public class SettingsStore {
         saveToIni("blurEnabled", blurEnabled);
     }
 
-   public void setHistogramUpEnabled(String enabled) {
+    public void setHistogramUpEnabled(String enabled) {
         histogramUpEnabled = "";
         if (enabled != null && (enabled.equals("on") || enabled.equals("checked")))
             histogramUpEnabled = "checked";
         saveToIni("histogramUpEnabled", histogramUpEnabled);
     }
 
-   public void setLightUpEnabledEnabled(String enabled) {
+    public void setLightUpEnabledEnabled(String enabled) {
         lightUpEnabled = "";
         if (enabled != null && (enabled.equals("on") || enabled.equals("checked")))
             lightUpEnabled = "checked";
@@ -159,27 +169,66 @@ public class SettingsStore {
         return localInstance;
     }
 
-    public HashMap<String, List> getGalleryList() {
+    public HashMap<String, HashMap> getGalleryList() {
         return galleryList;
     }
 
     public void updateGalleryList(String absoluteDiskPath) {
-        HashMap<String, List> galleryList = new HashMap<>();
+        HashMap<String, HashMap> galleryList = new HashMap<>();
 
-        ArrayList<String> detailsList = new ArrayList<>();
-        File folder = new File(absoluteDiskPath);
-        File[] listOfFiles = folder.listFiles();
+        File outputDir = new File(absoluteDiskPath);
+        File[] listOfFolders = outputDir.listFiles();
 
-        if (listOfFiles != null) {
-            for (File file : listOfFiles) {
-                if (!file.isFile()) {
-                    galleryList.put(file.getName(), detailsList);
+        if (listOfFolders != null) {
+            for (File folder : listOfFolders) {
+                if (!folder.isFile()) { // folder loop
+                    File[] listOfFiles = folder.listFiles();
+
+                    if (listOfFiles != null) { //files loop for each folder
+                        HashMap<String, HashMap> filesMap = new HashMap<>();
+                        HashMap<String, String> detailsMap = new HashMap<>();
+
+                        for (File file : listOfFiles) { //create map with file detail info, size, path, etc
+                            if (file.getName().endsWith("original.jpg")) {
+                                detailsMap.put("size", getFileSizeKiloBytes(file));
+                                detailsMap.put("imgLink", "/ImageProcessor_war/output/" + folder.getName() + "/" + file.getName());
+                                detailsMap.put("createDateTime", getFileCreateDate(file));
+                                detailsMap.put("compressedSize", getFileSizeKiloBytes(file));
+                            } else {
+                                detailsMap.put("size", getFileSizeKiloBytes(file));
+                                detailsMap.put("imgLink", "/ImageProcessor_war/output/" + folder.getName() + "/" + file.getName());
+                            }
+                            filesMap.put(file.getName(), detailsMap);
+                        }
+                        galleryList.put(folder.getName(), filesMap);
+                    }
                 }
-
             }
         } else {
-            galleryList.put("No items", detailsList);
+            galleryList.put("No items", null);
         }
         this.galleryList = galleryList;
+    }
+
+    private String getFileCreateDate(File file) {
+        try {
+            Path p = Paths.get(file.getAbsoluteFile().toURI());
+            BasicFileAttributes attr = null;
+            attr = Files.getFileAttributeView(p, BasicFileAttributeView.class).readAttributes();
+            DateFormat df = new SimpleDateFormat("dd-MM-yyyy hh-mm");
+
+            return df.format(attr.creationTime().toMillis());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private static String getFileSizeKiloBytes(File file) {
+        if (file != null) {
+            DecimalFormat df = new DecimalFormat("#.###");
+            df.setRoundingMode(RoundingMode.CEILING);
+            return df.format(file.length() / 1024) + "  kb";
+        } else return "0 kb";
     }
 }
