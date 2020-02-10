@@ -156,7 +156,9 @@
                                                                 out.println("<img src=\"" + fileDetails.get("imgLink") + "\" class=\"img-fluid img-thumbnail\" alt=\"Sheep\" data-toggle=\"modal\" data-target=\"#exampleModal\">");
                                                                 out.println("</td>");
 
-                                                                out.println("<td>"+fileDetails.get("compressedSize")+"</td>");
+                                                                out.println("<td>" + fileDetails.get("compressedSize") + "</br>");
+                                                                out.println("<a href=\"" +fileDetails.get("imgLink")+ "\" class=\"btn btn-outline-info btn-sm active\" role=\"button\" aria-pressed=\"true\">Открыть оригинал</a>");
+                                                                out.println("</td>");
                                                                 out.println("<td>"+fileDetails.get("size")+"</td>");
                                                                 out.println("</tr>");
                                                             }
@@ -326,8 +328,8 @@
                 ...
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-dismiss="modal">Закрыть</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Удалить</button>
+                <button type="button" class="btn btn-success" data-dismiss="modal">Закрыть</button>
+                <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Удалить</button>
             </div>
         </div>
     </div>
