@@ -38,26 +38,34 @@ public class MainServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if (ServletFileUpload.isMultipartContent(request)) {
             try {
+                SettingsStore settings = SettingsStore.getInstance();
+                String absoluteDiskPath = getServletContext().getRealPath("/output/");
                 List<FileItem> multiparts = new ServletFileUpload(new DiskFileItemFactory()).parseRequest(request);
+
                 if (!multiparts.isEmpty()) {
                     File fileOut = null;
                     for (FileItem item : multiparts) {
                         if (item.getSize() > 0) {
                             File receivedItem = new File(item.getName());
                             String originalFileName = receivedItem.getName();
-                            String absoluteDiskPath = getServletContext().getRealPath("/output/");
                             fileOut = new File(absoluteDiskPath + FilenameUtils.getBaseName(receivedItem.getName()) + "/original.jpg");
                             item.write(fileOut);
 
                             if (fileOut.length() > 0) {
-                                SettingsStore settings = SettingsStore.getInstance();
+
                                 String compressEnabled = settings.getCompressEnabled();
                                 String blurEnabled = settings.getBlurEnabled();
                                 String histogramUpEnabled = settings.getHistogramUpEnabled();
                                 String lightUpEnabled = settings.getLightUpEnabled();
 
-                                if (compressEnabled != null && compressEnabled.equals("checked"))
-                                    compressJpeg(fileOut);
+                                if (compressEnabled != null && compressEnabled.equals("checked")) {
+                                    try {
+                                        float ratio = settings.getCompressionRatio().floatValue();
+                                        compressJpeg(fileOut, ratio);
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
 
                                 if (blurEnabled != null && blurEnabled.equals("checked"))
                                      blur(fileOut, 4);
@@ -194,13 +202,13 @@ public class MainServlet extends HttpServlet {
         ImageIO.write(biImgOut, "jpg", new File(inputFile.getParentFile()+"/blur.jpg"));
     }
 
-    public static void compressJpeg(File imageFile) throws IOException {
+    public static void compressJpeg(File imageFile, float ratio) throws IOException {
         File compressedImageFile = new File(imageFile.getParentFile()+"/compressed.jpg");
 
         InputStream is = new FileInputStream(imageFile);
         OutputStream os = new FileOutputStream(compressedImageFile);
 
-        float quality = 0.5f;
+        float quality = ratio/100;
 
         // create a BufferedImage as the result of decoding the supplied InputStream
         BufferedImage image = ImageIO.read(is);

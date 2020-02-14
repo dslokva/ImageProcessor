@@ -152,10 +152,10 @@
                                                         out.println("<img src=\"" + origFile.get("imgLink") + "\" class=\"img-fluid img-thumbnail\" alt=\"" + folderName + "\" data-toggle=\"modal\" data-target=\"#modal-"+folderName+"\">");
                                                         out.println("</td>");
 
-                                                        out.println("<td>" + origFile.get("compressedSize") + "</br>");
+                                                        out.println("<td>" + origFile.get("size") + "</br>");
                                                         out.println("<a href=\"" + origFile.get("imgLink") + "\" target=\"_blank\" class=\"btn btn-outline-info btn-sm active\" role=\"button\" aria-pressed=\"true\">Открыть оригинал</a>");
                                                         out.println("</td>");
-                                                        out.println("<td>" + origFile.get("size") + "</td>");
+                                                        out.println("<td>" + origFile.get("compressedSize") + "</td>");
                                                         out.println("</tr>");
                                                     }
                                                 } else {

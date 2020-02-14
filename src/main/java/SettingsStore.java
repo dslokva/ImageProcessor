@@ -189,7 +189,7 @@ public class SettingsStore {
                         String compressedFileSize = "";
 
                         for (File file : listOfFiles)
-                            if (file.getName().equals("original.jpg")) {
+                            if (file.getName().equals("compressed.jpg")) {
                                 compressedFileSize = getFileSizeKiloBytes(file);
                                 break;
                             }
