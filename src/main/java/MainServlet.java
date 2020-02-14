@@ -80,6 +80,9 @@ public class MainServlet extends HttpServlet {
                             request.setAttribute("message", "Файл \"" + originalFileName + "\" загружен успешно.");
                             request.setAttribute("filesize", getFileSizeKiloBytes(fileOut));
                             request.setAttribute("errorCode", 0);
+
+                            settings.updateGalleryList(absoluteDiskPath);
+                            request.setAttribute("galleryList", settings.getGalleryList());
                         } else {
                             request.setAttribute("message", "Файл не выбран!");
                             request.setAttribute("filesize", "");
