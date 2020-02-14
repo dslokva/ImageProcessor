@@ -134,41 +134,35 @@
 
                                             <%
                                                 HashMap<String, HashMap> galleryList = (HashMap<String, HashMap>) request.getAttribute("galleryList");
+
                                                 if (galleryList != null) {
                                                     Iterator it = galleryList.entrySet().iterator();
                                                     while (it.hasNext()) {
                                                         Map.Entry pair = (Map.Entry) it.next();
                                                         String folderName = (String) pair.getKey();
                                                         HashMap<String, HashMap> detailsMap = (HashMap<String, HashMap>) pair.getValue();
+                                                        folderName = folderName.replaceAll("\\s", "_");
 
-                                                        Iterator it2 = detailsMap.entrySet().iterator();
-                                                        while (it2.hasNext()) {
-                                                            Map.Entry pair2 = (Map.Entry) it2.next();
-                                                            String fileName = (String) pair2.getKey();
-                                                            HashMap<String, String> fileDetails = (HashMap<String, String>) pair2.getValue();
+                                                        HashMap<String, String> origFile = detailsMap.get("original.jpg");
 
+                                                        out.println("<tr>");
+                                                        out.println("<td>" + origFile.get("createDateTime") + "</td>");
 
-                                                            if (fileName.endsWith("original.jpg")) {
-                                                                out.println("<tr>");
-                                                                out.println("<td>" +fileDetails.get("createDateTime")+ "</td>");
+                                                        out.println("<td class=\"w-25\">");
+                                                        out.println("<img src=\"" + origFile.get("imgLink") + "\" class=\"img-fluid img-thumbnail\" alt=\"" + folderName + "\" data-toggle=\"modal\" data-target=\"#modal-"+folderName+"\">");
+                                                        out.println("</td>");
 
-                                                                out.println("<td class=\"w-25\">");
-                                                                out.println("<img src=\"" + fileDetails.get("imgLink") + "\" class=\"img-fluid img-thumbnail\" alt=\"Sheep\" data-toggle=\"modal\" data-target=\"#exampleModal\">");
-                                                                out.println("</td>");
-
-                                                                out.println("<td>" + fileDetails.get("compressedSize") + "</br>");
-                                                                out.println("<a href=\"" +fileDetails.get("imgLink")+ "\" class=\"btn btn-outline-info btn-sm active\" role=\"button\" aria-pressed=\"true\">Открыть оригинал</a>");
-                                                                out.println("</td>");
-                                                                out.println("<td>"+fileDetails.get("size")+"</td>");
-                                                                out.println("</tr>");
-                                                            }
-                                                        }
+                                                        out.println("<td>" + origFile.get("compressedSize") + "</br>");
+                                                        out.println("<a href=\"" + origFile.get("imgLink") + "\" target=\"_blank\" class=\"btn btn-outline-info btn-sm active\" role=\"button\" aria-pressed=\"true\">Открыть оригинал</a>");
+                                                        out.println("</td>");
+                                                        out.println("<td>" + origFile.get("size") + "</td>");
+                                                        out.println("</tr>");
                                                     }
                                                 } else {
                                                     out.println("<tr><td> No items. </td></tr>");
                                                 }
-                                            %>
 
+                                            %>
 
                                             </tbody>
                                         </table>
@@ -307,33 +301,92 @@
         console.log("ready!");
     });
 
-    function chkCompressClick() {
-
-    }
 
 </script>
 
-<!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Результат обработки</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                ...
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-success" data-dismiss="modal">Закрыть</button>
-                <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Удалить</button>
-            </div>
-        </div>
-    </div>
-</div>
+<%
+    String modalBody = "";
+    galleryList = (HashMap<String, HashMap>) request.getAttribute("galleryList");
+
+    if (galleryList != null) {
+        Iterator it = galleryList.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry) it.next();
+            String folderName = (String) pair.getKey();
+            HashMap<String, HashMap> detailsMap = (HashMap<String, HashMap>) pair.getValue();
+            folderName = folderName.replaceAll("\\s", "_");
+
+
+            out.println("  <div class=\"modal fade\" id=\"modal-" + folderName + "\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"modalLabel-" + folderName + "\" aria-hidden=\"true\"> ");
+            out.println("      <div class=\"modal-dialog\" role=\"document\"> ");
+            out.println("          <div class=\"modal-content\"> ");
+            out.println("              <div class=\"modal-header\"> ");
+            out.println("                  <h5 class=\"modal-title\" id=\"modalLabel-" + folderName + "\">Результат обработки</h5> ");
+            out.println("                  <button type=\"button\" class=\"close\" data-dismiss=\"modal-" + folderName + "\" aria-label=\"close\"> ");
+            out.println("                      <span aria-hidden=\"true\">&times;</span> ");
+            out.println("                  </button> ");
+            out.println("              </div> ");
+            out.println("              <div class=\"modal-body\">");
+            out.println("                  <table class=\"table table-image\"> ");
+            out.println("                      <thead> ");
+            out.println("                      <tr> ");
+            out.println("                          <th scope=\"col\">Вид обработки</th> ");
+            out.println("                          <th scope=\"col\">Изображение</th> ");
+            out.println("                          <th scope=\"col\">Размер</th> ");
+            out.println("                      </tr> ");
+            out.println("                      </thead> ");
+            out.println("                      <tbody> ");
+
+            Iterator it2 = detailsMap.entrySet().iterator();
+            while (it2.hasNext()) {
+                Map.Entry pair2 = (Map.Entry) it2.next();
+                String fileName = (String) pair2.getKey();
+                HashMap<String, String> fileDetails = (HashMap<String, String>) pair2.getValue();
+
+                if (!fileName.equals("original.jpg")) {
+                    String imgType = "";
+                    switch (fileName) {
+                        case "compressed.jpg":
+                            imgType = "Сжатие";
+                            break;
+                        case "blur.jpg":
+                            imgType = "Размытие";
+                            break;
+                        case "slightBritness.jpg":
+                            imgType = "Выравнивание яркости";
+                            break;
+                        case "heavyBrightness.jpg":
+                            imgType = "Засветка";
+                            break;
+                        default:
+                            // code block
+                    }
+                    modalBody += "<tr><td>" + imgType + "</td><td class=\"w-100\">" +
+                            "<img src=\"" + fileDetails.get("imgLink") + "\" class=\"img-fluid img-thumbnail\" alt=\"" + imgType + ".jpg\">" +
+                            "</td> <td>" + fileDetails.get("size") + "</br>" +
+                            "<a href=\"" + fileDetails.get("imgLink") + "\" target=\"_blank\" class=\"btn btn-outline-info btn-sm active\" role=\"button\" aria-pressed=\"true\">Открыть</a>" +
+                            "</td></tr>";
+                }
+            }
+            out.println(modalBody);
+            out.println("               </tbody> ");
+            out.println("              </table> ");
+            out.println("          </div> ");//modal-body
+
+            out.println("          <div class=\"modal-footer\"> ");
+            out.println("              <button type=\"button\" class=\"btn btn-success\" data-dismiss=\"modal-"+folderName+"\">Закрыть</button> ");
+            out.println("              <button type=\"button\" class=\"btn btn-outline-danger\" data-dismiss=\"modal-"+folderName+"\">Удалить</button> ");
+            out.println("          </div> ");
+            out.println("      </div> ");//modal-content
+            out.println("  </div> ");//modal-dialog
+            out.println("</div> ");//modal-fade
+            modalBody = "";
+        }
+    } else {
+        out.println("<tr><td> No items. </td></tr>");
+    }
+
+%>
 
 </body>
 </html>

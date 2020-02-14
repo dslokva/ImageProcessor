@@ -186,14 +186,21 @@ public class SettingsStore {
 
                     if (listOfFiles != null) { //files loop for each folder
                         HashMap<String, HashMap> filesMap = new HashMap<>();
-                        HashMap<String, String> detailsMap = new HashMap<>();
+                        String compressedFileSize = "";
+
+                        for (File file : listOfFiles)
+                            if (file.getName().equals("original.jpg")) {
+                                compressedFileSize = getFileSizeKiloBytes(file);
+                                break;
+                            }
 
                         for (File file : listOfFiles) { //create map with file detail info, size, path, etc
-                            if (file.getName().endsWith("original.jpg")) {
+                            HashMap<String, String> detailsMap = new HashMap<>();
+                            if (file.getName().equals("original.jpg")) {
                                 detailsMap.put("size", getFileSizeKiloBytes(file));
                                 detailsMap.put("imgLink", "/ImageProcessor_war/output/" + folder.getName() + "/" + file.getName());
                                 detailsMap.put("createDateTime", getFileCreateDate(file));
-                                detailsMap.put("compressedSize", getFileSizeKiloBytes(file));
+                                detailsMap.put("compressedSize", compressedFileSize);
                             } else {
                                 detailsMap.put("size", getFileSizeKiloBytes(file));
                                 detailsMap.put("imgLink", "/ImageProcessor_war/output/" + folder.getName() + "/" + file.getName());
