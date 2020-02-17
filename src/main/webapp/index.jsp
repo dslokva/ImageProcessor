@@ -322,7 +322,7 @@
             out.println("          <div class=\"modal-content\"> ");
             out.println("              <div class=\"modal-header\"> ");
             out.println("                  <h5 class=\"modal-title\" id=\"modalLabel-" + folderName + "\">Результат обработки</h5> ");
-            out.println("                  <button type=\"button\" class=\"close\" data-dismiss=\"modal-" + folderName + "\" aria-label=\"close\"> ");
+            out.println("                  <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"close\"> ");
             out.println("                      <span aria-hidden=\"true\">&times;</span> ");
             out.println("                  </button> ");
             out.println("              </div> ");
@@ -374,8 +374,8 @@
             out.println("          </div> ");//modal-body
 
             out.println("          <div class=\"modal-footer\"> ");
-            out.println("              <button type=\"button\" class=\"btn btn-success\" data-dismiss=\"modal-"+folderName+"\">Закрыть</button> ");
-            out.println("              <button type=\"button\" class=\"btn btn-outline-danger\" data-dismiss=\"modal-"+folderName+"\">Удалить</button> ");
+            out.println("              <button type=\"button\" class=\"btn btn-success\" data-dismiss=\"modal\">Закрыть</button> ");
+            out.println("              <button type=\"button\" class=\"btn btn-outline-danger\" data-dismiss=\"modal\">Удалить</button> ");
             out.println("          </div> ");
             out.println("      </div> ");//modal-content
             out.println("  </div> ");//modal-dialog
