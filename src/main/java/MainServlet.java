@@ -9,14 +9,14 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.comparator.LastModifiedFileComparator;
 import org.opencv.core.*;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.CLAHE;
@@ -39,7 +39,7 @@ public class MainServlet extends HttpServlet {
         if (ServletFileUpload.isMultipartContent(request)) {
             try {
                 SettingsStore settings = SettingsStore.getInstance();
-                String absoluteDiskPath = getServletContext().getRealPath("/output/");
+                String outputFolderDiskPath = getServletContext().getRealPath("/output/");
                 List<FileItem> multiparts = new ServletFileUpload(new DiskFileItemFactory()).parseRequest(request);
 
                 if (!multiparts.isEmpty()) {
@@ -48,7 +48,8 @@ public class MainServlet extends HttpServlet {
                         if (item.getSize() > 0) {
                             File receivedItem = new File(item.getName());
                             String originalFileName = receivedItem.getName();
-                            fileOut = new File(absoluteDiskPath + FilenameUtils.getBaseName(receivedItem.getName()) + "/original.jpg");
+                            String folderName = FilenameUtils.getBaseName(originalFileName.replace('.', '_'));
+                            fileOut = new File(outputFolderDiskPath + folderName + "/original.jpg");
                             item.write(fileOut);
 
                             if (fileOut.length() > 0) {
@@ -67,21 +68,28 @@ public class MainServlet extends HttpServlet {
                                     }
                                 }
 
-                                if (blurEnabled != null && blurEnabled.equals("checked"))
-                                     blur(fileOut, 4);
+                                if (blurEnabled != null && blurEnabled.equals("checked")) {
+                                    int blurRatio = settings.getBlurRatio();
+                                    if (blurRatio == 0)
+                                        blurRatio = 2;
+
+                                    blur(fileOut, blurRatio);
+                                }
 
                                 if (histogramUpEnabled != null && histogramUpEnabled.equals("checked"))
                                     histogramEqualise(fileOut);
 
                                 if (lightUpEnabled != null && lightUpEnabled.equals("checked"))
                                     adjustBrigtness(fileOut);
+
+                                removeFirstOldFromGallery(outputFolderDiskPath, 12);
                             }
 
                             request.setAttribute("message", "Файл \"" + originalFileName + "\" загружен успешно.");
                             request.setAttribute("filesize", getFileSizeKiloBytes(fileOut));
                             request.setAttribute("errorCode", 0);
 
-                            settings.updateGalleryList(absoluteDiskPath);
+                            settings.updateGalleryList(outputFolderDiskPath);
                             request.setAttribute("galleryList", settings.getGalleryList());
                         } else {
                             request.setAttribute("message", "Файл не выбран!");
@@ -97,6 +105,21 @@ public class MainServlet extends HttpServlet {
             request.setAttribute("message", "No File found");
         }
         request.getRequestDispatcher("/index.jsp").forward(request, response);
+    }
+
+    private void removeFirstOldFromGallery(String outputFolderDiskPath, int itemsMaxCount) {
+        File dir = new File(outputFolderDiskPath);
+        File[] files = dir.listFiles();
+        if (files != null && files.length > itemsMaxCount) {
+            try {
+                Arrays.sort(files, LastModifiedFileComparator.LASTMODIFIED_COMPARATOR);
+
+                File file = files[0];
+                FileUtils.deleteDirectory(file);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private static String getFileSizeKiloBytes(File file) {
@@ -119,7 +142,7 @@ public class MainServlet extends HttpServlet {
             // apply the CLAHE algorithm to the L channel
             CLAHE clahe = Imgproc.createCLAHE();
             clahe.setClipLimit(0.6);
-            clahe.setTilesGridSize(new Size(new Point(3,3)));
+            clahe.setTilesGridSize(new Size(new Point(3, 3)));
             clahe.apply(channel, channel);
 
             // Merge the the color planes back into an Lab image
@@ -139,8 +162,8 @@ public class MainServlet extends HttpServlet {
         return Imgcodecs.imdecode(new MatOfByte(byteArrayOutputStream.toByteArray()), Imgcodecs.IMREAD_UNCHANGED);
     }
 
-    private static BufferedImage Mat2BufferedImage(Mat matrix)throws IOException {
-        MatOfByte mob=new MatOfByte();
+    private static BufferedImage Mat2BufferedImage(Mat matrix) throws IOException {
+        MatOfByte mob = new MatOfByte();
         Imgcodecs.imencode(".jpg", matrix, mob);
         return ImageIO.read(new ByteArrayInputStream(mob.toArray()));
     }
@@ -176,7 +199,7 @@ public class MainServlet extends HttpServlet {
         Mat grayOrig = new Mat();
         Imgproc.cvtColor(img, grayOrig, Imgproc.COLOR_BGR2GRAY);
 
-        Imgcodecs.imwrite(inputFile.getParentFile()+"/heavyBrightness.jpg", equ);
+        Imgcodecs.imwrite(inputFile.getParentFile() + "/heavyBrightness.jpg", equ);
     }
 
     private static void adjustBrigtness(File inputFile) throws IOException {
@@ -187,7 +210,7 @@ public class MainServlet extends HttpServlet {
         applyCLAHE(mat, mat);
 
         BufferedImage biImgOut = Mat2BufferedImage(mat);
-        ImageIO.write(biImgOut, "jpg", new File(inputFile.getParentFile()+"/slightBritness.jpg"));
+        ImageIO.write(biImgOut, "jpg", new File(inputFile.getParentFile() + "/slightBritness.jpg"));
 
     }
 
@@ -197,21 +220,21 @@ public class MainServlet extends HttpServlet {
 
         Mat sourceImage;
         Mat destImage = input.clone();
-        for (int i=0;i<numberOfTimes;i++) {
+        for (int i = 0; i < numberOfTimes; i++) {
             sourceImage = destImage.clone();
-            Imgproc.blur(sourceImage, destImage, new Size(5.0, 5.0));
+            Imgproc.blur(sourceImage, destImage, new Size(3.5, 3.5));
         }
         BufferedImage biImgOut = Mat2BufferedImage(destImage);
-        ImageIO.write(biImgOut, "jpg", new File(inputFile.getParentFile()+"/blur.jpg"));
+        ImageIO.write(biImgOut, "jpg", new File(inputFile.getParentFile() + "/blur.jpg"));
     }
 
     public static void compressJpeg(File imageFile, float ratio) throws IOException {
-        File compressedImageFile = new File(imageFile.getParentFile()+"/compressed.jpg");
+        File compressedImageFile = new File(imageFile.getParentFile() + "/compressed.jpg");
 
         InputStream is = new FileInputStream(imageFile);
         OutputStream os = new FileOutputStream(compressedImageFile);
 
-        float quality = ratio/100;
+        float quality = ratio / 100;
 
         // create a BufferedImage as the result of decoding the supplied InputStream
         BufferedImage image = ImageIO.read(is);

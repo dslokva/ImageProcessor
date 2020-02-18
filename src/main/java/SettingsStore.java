@@ -1,5 +1,4 @@
 import org.ini4j.Ini;
-
 import java.io.File;
 import java.io.IOException;
 import java.math.RoundingMode;
@@ -8,19 +7,16 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributeView;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.nio.file.attribute.FileTime;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Objects;
 
 public class SettingsStore {
     private static volatile SettingsStore instance;
-    private Integer blurRatio;
-    private Integer compressionRatio;
+    private Integer blurRatio = 2;
+    private Integer compressionRatio = 30;
     private String compressEnabled;
     private String blurEnabled;
     private String histogramUpEnabled;
@@ -186,7 +182,7 @@ public class SettingsStore {
 
                     if (listOfFiles != null) { //files loop for each folder
                         HashMap<String, HashMap> filesMap = new HashMap<>();
-                        String compressedFileSize = "";
+                        String compressedFileSize = "0 kb";
 
                         for (File file : listOfFiles)
                             if (file.getName().equals("compressed.jpg")) {
