@@ -36,10 +36,10 @@ public class MainServlet extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String outputFolderDiskPath = getServletContext().getRealPath("/output/");
         if (ServletFileUpload.isMultipartContent(request)) {
             try {
                 SettingsStore settings = SettingsStore.getInstance();
-                String outputFolderDiskPath = getServletContext().getRealPath("/output/");
                 List<FileItem> multiparts = new ServletFileUpload(new DiskFileItemFactory()).parseRequest(request);
 
                 if (!multiparts.isEmpty()) {
@@ -102,7 +102,13 @@ public class MainServlet extends HttpServlet {
                 request.setAttribute("message", "Ошибка загрузки: " + ex);
             }
         } else {
-            request.setAttribute("message", "No File found");
+            String folderToDel = request.getParameter("imgToDel");
+            if (folderToDel != null) {
+                removeFromGalleryByFolderName(outputFolderDiskPath, folderToDel);
+                request.setAttribute("message", "Изображение удалено");
+            } else {
+                request.setAttribute("message", "Файл не найден");
+            }
         }
         request.getRequestDispatcher("/index.jsp").forward(request, response);
     }
@@ -116,6 +122,21 @@ public class MainServlet extends HttpServlet {
 
                 File file = files[0];
                 FileUtils.deleteDirectory(file);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void removeFromGalleryByFolderName(String outputFolderDiskPath, String folderNameToDelete) {
+        File dir = new File(outputFolderDiskPath);
+        File[] files = dir.listFiles();
+        if (files != null) {
+            try {
+                for (File file : files) {
+                    if (!file.isFile() & file.getName().equals(folderNameToDelete))
+                        FileUtils.deleteDirectory(file);
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }

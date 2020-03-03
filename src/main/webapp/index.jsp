@@ -96,6 +96,7 @@
                                                 out.println("  <div class=\"toast-header\">");
                                                 out.println("    <img class=\"rounded mr-2\">");
                                                 out.println("    <strong class=\"mr-auto\">Ответ от сервера</strong>");
+                                                if (filesize == null) filesize = "";
                                                 out.println("    <small class=\"text-muted\">" + filesize + "</small>");
                                                 out.println("    <button type=\"button\" class=\"ml-2 mb-1 close\" data-dismiss=\"toast\" aria-label=\"Close\">");
                                                 out.println("      <span aria-hidden=\"true\">&times;</span>");
@@ -140,6 +141,10 @@
                                                     while (it.hasNext()) {
                                                         Map.Entry pair = (Map.Entry) it.next();
                                                         String folderName = (String) pair.getKey();
+                                                        if (folderName.equals("No items.")) {
+                                                            out.println("<tr><td> Изображения отсутствуют. Загруженные файлы будут отображены здесь. </td></tr>");
+                                                            break;
+                                                        }
                                                         HashMap<String, HashMap> detailsMap = (HashMap<String, HashMap>) pair.getValue();
                                                         folderName = folderName.replaceAll("\\s", "_");
 
@@ -149,7 +154,7 @@
                                                         out.println("<td>" + origFile.get("createDateTime") + "</td>");
 
                                                         out.println("<td class=\"w-25\">");
-                                                        out.println("<img src=\"" + origFile.get("imgLink") + "\" class=\"img-fluid img-thumbnail\" alt=\"" + folderName + "\" data-toggle=\"modal\" data-target=\"#modal-"+folderName+"\">");
+                                                        out.println("<img src=\"" + origFile.get("imgLink") + "\" class=\"img-fluid img-thumbnail\" alt=\"" + folderName + "\" data-toggle=\"modal\" data-target=\"#modal-" + folderName + "\">");
                                                         out.println("</td>");
 
                                                         out.println("<td>" + origFile.get("size") + "</br>");
@@ -372,18 +377,19 @@
             out.println("               </tbody> ");
             out.println("              </table> ");
             out.println("          </div> ");//modal-body
-
+            folderName = folderName.replaceAll("_", " ");
             out.println("          <div class=\"modal-footer\"> ");
             out.println("              <button type=\"button\" class=\"btn btn-success\" data-dismiss=\"modal\">Закрыть</button> ");
-            out.println("              <button type=\"button\" class=\"btn btn-outline-danger\" data-dismiss=\"modal\">Удалить</button> ");
+            out.println("              <form name=\"imgDelete\" action=\"imageProcess\" method=\"post\">");
+            out.println("                <input type=\"hidden\" name=\"imgToDel\" value=\"" + folderName + "\">");
+            out.println("                <button type=\"submit\" class=\"btn btn-outline-danger\">Удалить</button> ");
+            out.println("              </form>");
             out.println("          </div> ");
             out.println("      </div> ");//modal-content
             out.println("  </div> ");//modal-dialog
             out.println("</div> ");//modal-fade
             modalBody = "";
         }
-    } else {
-        out.println("<tr><td> No items. </td></tr>");
     }
 
 %>

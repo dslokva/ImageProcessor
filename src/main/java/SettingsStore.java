@@ -175,7 +175,7 @@ public class SettingsStore {
         File outputDir = new File(absoluteDiskPath);
         File[] listOfFolders = outputDir.listFiles();
 
-        if (listOfFolders != null) {
+        if (listOfFolders != null & listOfFolders.length > 0) {
             for (File folder : listOfFolders) {
                 if (!folder.isFile()) { // folder loop
                     File[] listOfFiles = folder.listFiles();
@@ -208,7 +208,7 @@ public class SettingsStore {
                 }
             }
         } else {
-            galleryList.put("No items", null);
+            galleryList.put("No items.", null);
         }
         this.galleryList = galleryList;
     }
@@ -218,7 +218,7 @@ public class SettingsStore {
             Path p = Paths.get(file.getAbsoluteFile().toURI());
             BasicFileAttributes attr = null;
             attr = Files.getFileAttributeView(p, BasicFileAttributeView.class).readAttributes();
-            DateFormat df = new SimpleDateFormat("dd-MM-yyyy hh-mm");
+            DateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm");
 
             return df.format(attr.creationTime().toMillis());
         } catch (IOException e) {
